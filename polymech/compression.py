@@ -6,10 +6,10 @@ CompressionResults = namedtuple(
     'CompressionResults', (
         'young_modulus',
         'yield_point',
-        'trimmed_dataset'
+        'processed_dataset'
     )
 )
-YieldPoint = namedtuple('YieldPoint', ('index', 'timestamp', 'force'))
+YieldPoint = namedtuple('YieldPoint', ('index', 'elongation', 'tension'))
 YoungModulus = namedtuple('YoungModulus', ('modulus', 'first_point', 'second_point'))
 
 
@@ -17,6 +17,23 @@ def _differentiate(dataset: np.ndarray) -> np.ndarray:
     dataset_x, dataset_y = dataset.T
     derivative = np.diff(dataset_y) / np.diff(dataset_x)
     return derivative
+
+
+def _timestamps_to_elongation(dataset: np.ndarray, sample_length_mm: float,
+                              compression_rate_mm_per_min: float) -> np.ndarray:
+    dataset_T = dataset.T
+    zero_elongation_timestamp = dataset_T[0][0]
+    compression_rate_mm_per_sec = compression_rate_mm_per_min / 60
+    dataset_T[0] -= zero_elongation_timestamp
+    dataset_T[0] = (dataset_T[0] * compression_rate_mm_per_sec) / sample_length_mm
+    return dataset_T.T
+
+
+def _force_to_tension(dataset: np.ndarray, sample_cross_section_sq_mm: float) -> np.ndarray:
+    dataset_T = dataset.T
+    sample_cross_section_sq_m = sample_cross_section_sq_mm / 1000000
+    dataset_T[1] = dataset_T[1] / sample_cross_section_sq_m
+    return dataset_T.T
 
 
 def _trim_dataset(dataset: np.ndarray) -> np.ndarray:
@@ -38,6 +55,14 @@ def _trim_dataset(dataset: np.ndarray) -> np.ndarray:
     )
 
     return dataset[last_value_with_negative_derivative:-number_of_equal_values_at_end]
+
+
+def _cutoff_decompression(dataset: np.ndarray) -> np.ndarray:
+    derivative = _differentiate(dataset)
+    values_to_cut_count = next(
+        i for i, value in enumerate(reversed(derivative)) if value > 0
+    )
+    return dataset[:-values_to_cut_count]
 
 
 def _find_yield_point(dataset: np.ndarray) -> Optional[YieldPoint]:
@@ -66,14 +91,19 @@ def _calc_young_modulus(dataset: np.ndarray) -> YoungModulus:
     return YoungModulus(modulus, first_point, second_point)
 
 
-def analyze(dataset: np.ndarray) -> CompressionResults:
-    # FIXME: sample geometry is not taken into account,
-    # so Young's modulus is not calculated correctly.
-
+def analyze(dataset: np.ndarray, sample_length_mm: float, sample_cross_section_sq_mm: float,
+            compression_rate_mm_per_min: float) -> CompressionResults:
     trimmed_dataset = _trim_dataset(dataset)
-    yield_point = _find_yield_point(trimmed_dataset)
+    compression_part_of_dataset = _cutoff_decompression(trimmed_dataset)
+    dataset_x_replaced = _timestamps_to_elongation(
+        compression_part_of_dataset, sample_length_mm, compression_rate_mm_per_min
+    )
+    dataset_xy_replaced = _force_to_tension(
+        dataset_x_replaced, sample_cross_section_sq_mm
+    )
+    yield_point = _find_yield_point(dataset_xy_replaced)
     if yield_point is None:
         raise Exception('Yield point detection failed')
-    young_modulus = _calc_young_modulus(dataset[:yield_point.index])
+    young_modulus = _calc_young_modulus(dataset_xy_replaced[:yield_point.index])
 
-    return CompressionResults(young_modulus, yield_point, trimmed_dataset)
+    return CompressionResults(young_modulus, yield_point, dataset_xy_replaced)
