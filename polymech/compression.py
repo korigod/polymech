@@ -82,8 +82,10 @@ def _calc_young_modulus(dataset: np.ndarray) -> YoungModulus:
     """
     Dataset must be trimmed and must end on the yield point or earlier.
     """
+    segment_x_length: int = len(dataset) // 10
     max_derivative_index = np.argmax([
-        dataset[i + 10][1] - dataset[i][1] for i in range(len(dataset) - 10)
+        dataset[i + segment_x_length][1] - dataset[i][1]
+        for i in range(len(dataset) - segment_x_length)
     ])
     first_point = dataset[max_derivative_index]
     second_point = dataset[max_derivative_index + 10]
