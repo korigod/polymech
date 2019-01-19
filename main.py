@@ -5,7 +5,8 @@ from polymech import compression
 from polymech.sources import kechekyan
 
 
-dataset = kechekyan('test.xlsx')
+with open('tests/data/01.xlsx', 'rb') as f:
+    dataset = kechekyan(f)
 diameter_mm = 8.4
 cross_section_sq_mm = math.pi * diameter_mm ** 2 / 4
 results = compression.analyze(dataset, 13.47, cross_section_sq_mm, 5.0)
