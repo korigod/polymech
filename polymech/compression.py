@@ -45,9 +45,13 @@ def _trim_dataset(dataset: np.ndarray) -> np.ndarray:
     )
     init_period = dataset[:max_index_for_init_period]
     init_period_values_derivative = _differentiate(init_period)
-    last_value_with_negative_derivative = [
+    values_with_negative_derivative = [
         i for i, value in enumerate(init_period_values_derivative) if value < 0
-    ][-1] + 1
+    ]
+    if values_with_negative_derivative:
+        last_value_with_negative_derivative = values_with_negative_derivative[-1] + 1
+    else:
+        last_value_with_negative_derivative = 0
 
     end_force: float = dataset[-1][1]
     number_of_equal_values_at_end = next(
