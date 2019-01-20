@@ -76,8 +76,11 @@ def _find_yield_point(dataset: np.ndarray) -> Optional[YieldPoint]:
         if point < 0 and derivative[i - 1] > 0:
             previous_ten_points = derivative[i - 10:i]
             next_ten_points = derivative[i:i + 10]
-            if any(p > 0 for p in previous_ten_points) and any(p < 0 for p in next_ten_points):
-                yield_point = YieldPoint(i, *dataset[i])
+            if sum(previous_ten_points) > 0 \
+               and sum(next_ten_points) < 0:
+                maximum_tension_index = np.argmax(dataset.T[1][i:i+10])
+                index = i + maximum_tension_index
+                yield_point = YieldPoint(index, *dataset[index])
                 break
     return yield_point
 
