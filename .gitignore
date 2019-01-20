@@ -8,3 +8,5 @@ __pycache__/
 /*.xls
 /*.xlsx
 /*.yaml
+data/
+plots/

@@ -6,12 +6,12 @@ from polymech import compression
 from polymech.sources import kechekyan, yaml_metadata
 from polymech.plot import save_plot
 
-with open('samples.yaml') as f:
+with open('data/samples.yaml') as f:
     samples = yaml_metadata(f)
 
 for sample in samples:
     cross_section_sq_mm = math.pi * sample['diameter'] ** 2 / 4
-    with open(sample['file'], 'rb') as f:
+    with open(f"data/{sample['file']}", 'rb') as f:
         results = compression.analyze(
             kechekyan(f), sample['length'], cross_section_sq_mm, sample['compression_rate']
         )
