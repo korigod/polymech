@@ -1,5 +1,5 @@
 {
-  "source_filename": "test.xlsx",
+  "source_filename": "tests/data/01.xlsx",
   "source_type": "kechekyan",
   "sample_length_mm": 13.47,
   "sample_cross_section_sq_mm": 55.41769440932395,
@@ -10,14 +10,14 @@
     "tension": 49778945.75463302
   },
   "young_modulus": {
-    "modulus": 925083299.0562354,
+    "modulus": 931694762.8770242,
     "first_point": [
       0.039023090248034575,
       18914489.447193976
     ],
     "second_point": [
-      0.048540917137799074,
-      27719272.146223467
+      0.04758913444882262,
+      26895427.967641305
     ]
   },
   "loaded_dataset": [

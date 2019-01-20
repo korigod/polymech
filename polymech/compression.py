@@ -92,7 +92,7 @@ def _calc_young_modulus(dataset: np.ndarray) -> YoungModulus:
         for i in range(len(dataset) - segment_x_length)
     ])
     first_point = dataset[max_derivative_index]
-    second_point = dataset[max_derivative_index + 10]
+    second_point = dataset[max_derivative_index + segment_x_length]
     modulus = (second_point[1] - first_point[1]) / (second_point[0] - first_point[0])
     return YoungModulus(modulus, first_point, second_point)
 
