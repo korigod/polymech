@@ -20,7 +20,7 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-source_filename = 'test.xlsx'
+source_filename = 'tests/data/01.xlsx'
 with open(source_filename, 'rb') as f:
     dataset = kechekyan(f)
 sample_length_mm = 13.47
@@ -57,5 +57,5 @@ test_data = {
 
 test_dump = json.dumps(test_data, indent=2, cls=NumpyEncoder)
 
-with open('test.json', 'w') as f:
+with open('tests/data/01.json', 'w') as f:
     f.write(test_dump)
