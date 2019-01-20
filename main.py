@@ -2,9 +2,8 @@ import math
 import json
 import csv
 
-from polymech import compression
+from polymech import compression, plot
 from polymech.sources import kechekyan, yaml_metadata
-from polymech.plot import stress_strain
 
 with open('data/samples.yaml') as f:
     samples = yaml_metadata(f)
@@ -23,10 +22,10 @@ for sample in samples:
     sample['yield_strength'] = results.yield_point.tension / 1e6
     sample['arzhakov'] = results.yield_point.elongation / (results.yield_point.tension / results.young_modulus.modulus)
     with open(f"plots/{sample['name']}.png", 'wb') as f:
-        stress_strain(results).savefig(f)
+        plot.stress_strain(results).savefig(f)
     all_results.append(results)
 with open('plots/all.png', 'wb') as f:
-    stress_strain(all_results).savefig(f)
+    plot.stress_strain(all_results).savefig(f)
 with open('results.json', 'w') as f:
     f.write(json.dumps(samples, indent=4, ensure_ascii=False))
 with open('results.csv', 'w') as f:
