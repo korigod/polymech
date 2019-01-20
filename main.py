@@ -26,9 +26,9 @@ for sample in samples:
     all_results.append(results)
 with open('plots/all.png', 'wb') as f:
     plot.stress_strain(all_results).savefig(f)
-with open('results.json', 'w') as f:
+with open('data/results.json', 'w') as f:
     f.write(json.dumps(samples, indent=4, ensure_ascii=False))
-with open('results.csv', 'w') as f:
+with open('data/results.csv', 'w') as f:
     w = csv.DictWriter(f, sample.keys())
     w.writeheader()
     w.writerows(samples)
