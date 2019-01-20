@@ -14,7 +14,8 @@ class NumpyEncoder(json.JSONEncoder):
 
 
 source_filename = 'test.xlsx'
-dataset = kechekyan(source_filename)
+with open(source_filename, 'rb') as f:
+    dataset = kechekyan(f)
 sample_length_mm = 13.47
 sample_diameter_mm = 8.4
 sample_cross_section_sq_mm = math.pi * sample_diameter_mm ** 2 / 4
