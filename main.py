@@ -16,6 +16,8 @@ for sample in samples:
             kechekyan(f), sample['length'], cross_section_sq_mm, sample['compression_rate']
         )
     sample['young_modulus'] = results.young_modulus.modulus / 1e9
+    if results.yield_point is None:
+        continue
     sample['yield_elongation'] = results.yield_point.elongation
     sample['yield_strength'] = results.yield_point.tension / 1e6
     sample['arzhakov'] = results.yield_point.elongation / (results.yield_point.tension / results.young_modulus.modulus)

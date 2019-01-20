@@ -112,7 +112,9 @@ def analyze(dataset: np.ndarray, sample_length_mm: float, sample_cross_section_s
     )
     yield_point = _find_yield_point(dataset_xy_replaced)
     if yield_point is None:
-        raise Exception('Yield point detection failed')
-    young_modulus = _calc_young_modulus(dataset_xy_replaced[:yield_point.index])
+        yield_index = -1
+    else:
+        yield_index = yield_point.index
+    young_modulus = _calc_young_modulus(dataset_xy_replaced[:yield_index])
 
     return CompressionResults(young_modulus, yield_point, dataset_xy_replaced)
