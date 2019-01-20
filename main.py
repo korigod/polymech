@@ -9,6 +9,7 @@ from polymech.plot import stress_strain
 with open('data/samples.yaml') as f:
     samples = yaml_metadata(f)
 
+all_results = []
 for sample in samples:
     cross_section_sq_mm = math.pi * sample['diameter'] ** 2 / 4
     with open(f"data/{sample['file']}", 'rb') as f:
@@ -23,6 +24,9 @@ for sample in samples:
     sample['arzhakov'] = results.yield_point.elongation / (results.yield_point.tension / results.young_modulus.modulus)
     with open(f"plots/{sample['name']}.png", 'wb') as f:
         stress_strain(results).savefig(f)
+    all_results.append(results)
+with open('plots/all.png', 'wb') as f:
+    stress_strain(all_results).savefig(f)
 with open('results.json', 'w') as f:
     f.write(json.dumps(samples, indent=4, ensure_ascii=False))
 with open('results.csv', 'w') as f:
