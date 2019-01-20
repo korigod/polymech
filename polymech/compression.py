@@ -79,7 +79,7 @@ def _find_yield_point(dataset: np.ndarray) -> Optional[YieldPoint]:
             if any(p > 0 for p in previous_ten_points) and any(p < 0 for p in next_ten_points):
                 yield_point = YieldPoint(i, *dataset[i])
                 break
-    return yield_point if yield_point is not None else None
+    return yield_point
 
 
 def _calc_young_modulus(dataset: np.ndarray) -> YoungModulus:
