@@ -66,7 +66,7 @@ def _cutoff_decompression(dataset: np.ndarray) -> np.ndarray:
     values_to_cut_count = next(
         i for i, value in enumerate(reversed(derivative)) if value > 0
     )
-    return dataset[:-values_to_cut_count]
+    return dataset[:-values_to_cut_count] if values_to_cut_count > 0 else dataset
 
 
 def _find_yield_point(dataset: np.ndarray) -> Optional[YieldPoint]:
