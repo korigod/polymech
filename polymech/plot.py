@@ -22,3 +22,12 @@ def stress_strain(
         axes.plot(*zip(result.young_modulus.first_point, result.young_modulus.second_point), 'r-')
         axes.plot(result.yield_point.elongation, result.yield_point.tension, 'ro')
     return figure
+
+
+def composition_to_modulus(composition_to_modulus: dict) -> Figure:
+    figure = Figure()
+    backend.FigureCanvasAgg(figure)
+    axes = figure.add_subplot(1, 1, 1)
+    for composition, modulus in composition_to_modulus.items():
+        axes.plot(composition, modulus, 'ro')
+    return figure
